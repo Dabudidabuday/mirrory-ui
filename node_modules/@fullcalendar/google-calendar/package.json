@@ -1,0 +1,47 @@
+{
+  "name": "@fullcalendar/google-calendar",
+  "version": "6.1.11",
+  "title": "FullCalendar Google Calendar Plugin",
+  "description": "Display events from a public Google Calendar feed",
+  "homepage": "https://fullcalendar.io/docs/google-calendar",
+  "keywords": [
+    "calendar",
+    "event",
+    "full-sized",
+    "fullcalendar",
+    "google-calendar"
+  ],
+  "peerDependencies": {
+    "@fullcalendar/core": "~6.1.11"
+  },
+  "type": "module",
+  "bugs": "https://fullcalendar.io/reporting-bugs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fullcalendar/fullcalendar.git",
+    "directory": "packages/google-calendar"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Adam Shaw",
+    "email": "arshaw@arshaw.com",
+    "url": "http://arshaw.com/"
+  },
+  "copyright": "2023 Adam Shaw",
+  "types": "./index.d.ts",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "unpkg": "./index.global.min.js",
+  "jsdelivr": "./index.global.min.js",
+  "exports": {
+    "./package.json": "./package.json",
+    "./index.cjs": "./index.cjs",
+    "./index.js": "./index.js",
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.cjs",
+      "import": "./index.js"
+    }
+  },
+  "sideEffects": false
+}
