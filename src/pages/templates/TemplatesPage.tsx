@@ -20,17 +20,18 @@ export const TemplatesPage = () => {
   return (
     <>
       <ButtonBack />
-      <Typography variant="h4" mb="2">
-        Шаблони
+      <Typography variant="h4" sx={{ marginBottom: 3 }}>
+        Практики
       </Typography>
 
-      <Divider
-        orientation="horizontal"
-        sx={{ marginTop: 1, marginBottom: 4 }}
-      />
-      <Grid container spacing={3}>
+      <Typography>
+        Практики розроблені, щоб допомогти вам розвинути навички благополуччя в
+        конкретних життєвих ситуаціях. Кожен практика складається з кроків, які
+        містять теорію та практику.
+      </Typography>
+      <Grid container spacing={3} sx={{ marginTop: 4 }}>
         {templates?.map(({ id, name, description }) => (
-          <Grid item xs={3} key={id}>
+          <Grid item xs={4} key={id}>
             <Box
               onClick={() => navigate(`${id}`)}
               sx={{
@@ -40,6 +41,7 @@ export const TemplatesPage = () => {
                 boxShadow: "1px 1px 24px 0px rgba(100, 100, 100, 0.10)",
               }}
             >
+              📝
               <Typography mb={2}>{name}</Typography>
               <Typography sx={{ fontSize: 12 }} color="#8D8D8D">
                 {description}
@@ -62,7 +64,7 @@ export const TemplatesPage = () => {
               sx={{ mt: 3, height: "auto" }}
               variant="contained"
             >
-              Створити Шаблон
+              Створити Практику
             </Button>
           </Box>
         </Grid>

@@ -26,8 +26,8 @@ export const MainLayout = () => {
       >
         <Outlet />
       </Grid>
-      <Grid item xs={2} sx={{ paddingTop: "56px" }}>
-        <Box
+      <Grid item xs={3} sx={{ paddingTop: "56px" }}>
+        {/* <Box
           sx={{
             p: 3,
             borderRadius: "16px",
@@ -41,7 +41,7 @@ export const MainLayout = () => {
           <Typography variant="h6">
             {dayjs(new Date()).format("dddd")}
           </Typography>
-        </Box>
+        </Box> */}
 
         <Quote
           quote={{

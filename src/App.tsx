@@ -24,6 +24,15 @@ function App() {
 
         <Route element={<WideLayout />}>
           <Route
+            path="Home"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="notes/:id"
             element={
               <PrivateRoute>
@@ -41,17 +50,7 @@ function App() {
             }
           />
         </Route>
-
         <Route element={<MainLayout />}>
-          <Route
-            path="Home"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-
           <Route
             path="/profile"
             element={

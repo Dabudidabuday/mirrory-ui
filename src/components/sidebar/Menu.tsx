@@ -35,7 +35,7 @@ export const Menu = () => {
     },
     {
       path: "templates",
-      name: "Шаблони",
+      name: "Практики",
     },
     {
       path: "calendar",

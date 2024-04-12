@@ -48,7 +48,7 @@ export const MyNotes = () => {
             <Typography variant="h6">{description}</Typography>
 
             {question
-              .sort((a, b) => a.order - b.order)
+              ?.sort((a, b) => a.order - b.order)
               .map(({ name, answer }) => (
                 <Box key={name}>
                   <Typography>{name}</Typography>

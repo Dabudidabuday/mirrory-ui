@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { ChevronRightOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -44,48 +51,63 @@ export const Home = () => {
         flexDirection="column"
         sx={{
           display: "grid",
-          gridTemplateRows: "auto 1fr 1fr",
+          gridTemplateRows: "auto auto auto auto",
           flexDirection: "column",
           height: "100%",
+          marginTop: 2,
         }}
       >
-        <Grid item>
-          <Typography variant="h4" mb={1}>
-            Доброго ранку, {userInfo?.first_name}
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 300,
-              marginBottom: "40px",
-              letterSpacing: "0.15px",
-            }}
-          >
-            Пора втілити у життя заплановане ✨
-          </Typography>
+        <Grid item sx={{ display: "flex", alignItems: "flex-start" }}>
+          <Box sx={{ flex: 1, direction: "column" }}>
+            <Typography variant="h4" mb={1}>
+              Доброго ранку, {userInfo?.first_name}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 300,
+                letterSpacing: "0.15px",
+              }}
+            >
+              зараз саме час змін ✨
+            </Typography>
+          </Box>
+          <Box sx={{}}>
+            <Typography variant="h5">
+              {dayjs(new Date()).format("D MMMM,")}
+            </Typography>
+            <Typography variant="h6">
+              {dayjs(new Date()).format("dddd")}
+            </Typography>
+          </Box>
         </Grid>
 
+        <Divider
+          flexItem
+          orientation="horizontal"
+          sx={{ marginY: 4, height: "1px" }}
+        />
+
         <Grid item>
-          {notes?.map((note, index) => (
-            <Box
-              key={`${note}-${index}`}
-              sx={{
-                p: "24px",
-                mb: 2,
-                display: "flex",
-                justifyContent: "space-between",
-                backgroundColor: "#FCFBFA",
-                borderRadius: "16px",
-                boxShadow: "1px 1px 24px 0px rgba(100, 100, 100, 0.10)",
-                cursor: "pointer",
-              }}
-              onClick={() => navigate(`/notes/${note.id}`)}
-            >
-              <Typography>🌝 {note.template.name}</Typography>
-              <Typography>{note.template.description}</Typography>
-              <Typography>{dayjs(new Date()).format("DD.MM.YYYY")}</Typography>
+          <Typography sx={{ textTransform: "uppercase" }}>
+            Мій поточний спринт
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: 2,
+              background: "#F3EEE5",
+            }}
+          >
+            <Box>
+              <Typography>📝 Стоїцизм</Typography>
+              <Typography>День 3. Негативна візуалізація</Typography>
+              <LinearProgress variant="determinate" value={30} />
             </Box>
-          ))}
+            <Button variant="contained">Продовжити</Button>
+          </Box>
         </Grid>
 
         <Grid item>
@@ -97,7 +119,7 @@ export const Home = () => {
               mb: 3,
             }}
           >
-            <Typography variant="h4">Для щоденних записів</Typography>
+            <Typography variant="h4">Щоденні активності</Typography>
             <Button
               endIcon={
                 <ChevronRightOutlined
@@ -116,7 +138,7 @@ export const Home = () => {
 
           <Grid container sx={{ display: "flex" }} spacing={3}>
             {templates?.map(({ id, name, description }) => (
-              <Grid item xs={3} key={id}>
+              <Grid item xs={6} key={id}>
                 <Box
                   onClick={() => navigate(`/templates/${id}`)}
                   sx={{
