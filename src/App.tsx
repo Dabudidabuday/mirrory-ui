@@ -13,22 +13,8 @@ import { SingleNote } from "./pages/Notes/SingleNote";
 import { Calendar } from "./pages/Calendar/Calendar";
 import { Complete } from "./pages/templates/Complete";
 import { NoteLayout } from "./layouts/NoteLayout";
-import { client } from "./api/apolloClient";
-import { gql } from "@apollo/client";
 
 function App() {
-  client
-    .query({
-      query: gql(`
-      query {
-        template {
-          id
-          name
-        }
-      }
-    `),
-    })
-    .then((result) => console.log(result));
   return (
     <>
       <Routes>
