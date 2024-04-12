@@ -17,6 +17,10 @@ body {
   height: 100vh;
 }
 
+*::-webkit-scrollbar {
+  display: none;
+}
+
 .burger-line--1,
 .burger-line--2,
 .burger-line--3 {

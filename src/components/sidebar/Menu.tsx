@@ -1,17 +1,10 @@
-import {
-  Backdrop,
-  Button,
-  Popper,
-  Grow,
-  Paper,
-  ClickAwayListener,
-  MenuList,
-  MenuItem,
-} from "@mui/material";
+import { MenuList, MenuItem, Box, Typography } from "@mui/material";
 import { googleLogout } from "@react-oauth/google";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
+import mirroryLogo from "../../assets/mirrory-logo.svg";
+import { HomeOutlined } from "@mui/icons-material";
 
 export const Menu = () => {
   const navigate = useNavigate();
@@ -34,6 +27,7 @@ export const Menu = () => {
     {
       path: "home",
       name: "Домашня сторінка",
+      icon: <HomeOutlined />,
     },
     {
       path: "notes",
@@ -57,10 +51,6 @@ export const Menu = () => {
       callback: handleLogout,
     },
   ];
-
-  const handleToggle = () => {
-    set$menuOpen(!menuOpen);
-  };
 
   function handleListKeyDown(event: React.KeyboardEvent) {
     if (event.key === "Tab") {
@@ -97,86 +87,52 @@ export const Menu = () => {
 
   return (
     <>
-      {/* <Button variant="outlined" onClick={handleLogout}></Button> */}
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={menuOpen}
-        onClick={handleClose}
-      ></Backdrop>
-      <Button
+      <Box
         sx={{
-          width: 72,
-          height: 72,
-          backgroundColor: "#FCFBFA",
-          boxShadow: "1px 1px 24px 0px rgba(100, 100, 100, 0.10)",
-          borderRadius: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "7px",
-          zIndex: 1202,
+          backgroundColor: "#F3EEE5",
+          height: "calc(100vh - 56px)",
+          width: "224px",
+          padding: "24px",
         }}
-        className={menuOpen ? "burger-button active" : "burger-button"}
-        onClick={handleToggle}
-        ref={anchorRef}
-        id="composition-button"
-        aria-controls={menuOpen ? "composition-menu" : undefined}
-        aria-expanded={menuOpen ? "true" : undefined}
-        aria-haspopup="true"
       >
-        <span className="burger-line--1"></span>
-        <span className="burger-line--2"></span>
-        <span className="burger-line--3"></span>
-      </Button>
-      <Popper
-        open={menuOpen}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        sx={{ zIndex: 1202 }}
-        placement="right-start"
-        transition
-        disablePortal
-      >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "left-start" ? "left bottom" : "left top",
-            }}
-          >
-            <Paper sx={{ marginLeft: "32px" }}>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList
-                  autoFocusItem={menuOpen}
-                  id="composition-menu"
-                  aria-labelledby="composition-button"
-                  onKeyDown={handleListKeyDown}
-                >
-                  {pages.map(({ path, name, callback = () => null }) => (
-                    <MenuItem
-                      key={path}
-                      sx={{
-                        paddingY: "24px",
-                        paddingX: "32px",
-                        width: "369px",
-                        "&:hover": {
-                          backgroundColor: "#F3F1EC",
-                        },
-                      }}
-                      onClick={(e) => {
-                        handleClose(e, path);
-                        callback();
-                      }}
-                    >
-                      {name}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "60px",
+          }}
+        >
+          <img src={mirroryLogo} alt="" />
+          <Typography variant="h5">Mirrory</Typography>
+        </Box>
+        <MenuList
+          autoFocusItem={menuOpen}
+          id="composition-menu"
+          aria-labelledby="composition-button"
+          onKeyDown={handleListKeyDown}
+        >
+          {pages.map(({ path, name, icon, callback = () => null }) => (
+            <MenuItem
+              key={path}
+              sx={{
+                paddingY: "24px",
+                paddingX: "0",
+                "&:hover": {
+                  backgroundColor: "#F3F1EC",
+                },
+              }}
+              onClick={(e) => {
+                handleClose(e, path);
+                callback();
+              }}
+            >
+              {icon}
+              {name}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Box>
     </>
   );
 };

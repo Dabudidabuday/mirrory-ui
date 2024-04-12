@@ -12,7 +12,7 @@ import { MyNotes } from "./pages/Notes/MyNotes";
 import { SingleNote } from "./pages/Notes/SingleNote";
 import { Calendar } from "./pages/Calendar/Calendar";
 import { Complete } from "./pages/templates/Complete";
-import { NoteLayout } from "./layouts/NoteLayout";
+import { WideLayout } from "./layouts/WideLayout";
 
 function App() {
   return (
@@ -22,12 +22,21 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="*" element={<Login />} />
 
-        <Route element={<NoteLayout />}>
+        <Route element={<WideLayout />}>
           <Route
             path="notes/:id"
             element={
               <PrivateRoute>
                 <SingleNote />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={`templates/:id`}
+            element={
+              <PrivateRoute>
+                <SingleTemplate />
               </PrivateRoute>
             }
           />
@@ -57,15 +66,6 @@ function App() {
             element={
               <PrivateRoute>
                 <TemplatesPage />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path={`templates/:id`}
-            element={
-              <PrivateRoute>
-                <SingleTemplate />
               </PrivateRoute>
             }
           />

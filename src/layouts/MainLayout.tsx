@@ -10,22 +10,23 @@ export const MainLayout = () => {
     <Grid
       container
       sx={{
-        paddingTop: "56px",
-        paddingX: "32px",
-        maxWidth: "1340px",
         height: "100%",
         margin: "auto",
         gap: "64px",
         flexWrap: "nowrap",
       }}
     >
-      <Grid item sx={{ width: "72px" }}>
+      <Grid item>
         <Menu />
       </Grid>
-      <Grid item xs={8} sx={{ maxWidth: "800px", width: "100%" }}>
+      <Grid
+        item
+        xs={8}
+        sx={{ maxWidth: "800px", width: "100%", paddingTop: "56px" }}
+      >
         <Outlet />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2} sx={{ paddingTop: "56px" }}>
         <Box
           sx={{
             p: 3,
