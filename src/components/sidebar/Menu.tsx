@@ -1,10 +1,19 @@
-import { MenuList, MenuItem, Box, Typography } from "@mui/material";
+import { MenuList, MenuItem, Box, Typography, Icon } from "@mui/material";
 import { googleLogout } from "@react-oauth/google";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import mirroryLogo from "../../assets/mirrory-logo.svg";
-import { HomeOutlined } from "@mui/icons-material";
+import {
+  AutoStoriesOutlined,
+  CalendarTodayOutlined,
+  GridOnOutlined,
+  HomeOutlined,
+  ImportContacts,
+  Logout,
+  PersonOffOutlined,
+  SelfImprovementOutlined,
+} from "@mui/icons-material";
 
 export const Menu = () => {
   const navigate = useNavigate();
@@ -32,23 +41,38 @@ export const Menu = () => {
     {
       path: "notes",
       name: "Мої записи",
+      icon: <AutoStoriesOutlined />,
+    },
+    {
+      path: "sprints",
+      name: "Спринти",
+      icon: <GridOnOutlined />,
     },
     {
       path: "templates",
       name: "Практики",
+      icon: <SelfImprovementOutlined />,
+    },
+    {
+      path: "diary",
+      name: "Щоденник",
+      icon: <ImportContacts />,
     },
     {
       path: "calendar",
       name: "Мій Календар",
+      icon: <CalendarTodayOutlined />,
     },
     {
       path: "profile",
       name: "Профіль",
+      icon: <PersonOffOutlined />,
     },
     {
-      path: "",
+      path: "login",
       name: "Вийти",
       callback: handleLogout,
+      icon: <Logout />,
     },
   ];
 
@@ -116,10 +140,9 @@ export const Menu = () => {
             <MenuItem
               key={path}
               sx={{
-                paddingY: "24px",
-                paddingX: "0",
+                padding: "8px",
                 "&:hover": {
-                  backgroundColor: "#F3F1EC",
+                  backgroundColor: "#c3c3c3c",
                 },
               }}
               onClick={(e) => {
@@ -127,7 +150,7 @@ export const Menu = () => {
                 callback();
               }}
             >
-              {icon}
+              <Icon sx={{ marginRight: 2 }}>{icon}</Icon>
               {name}
             </MenuItem>
           ))}

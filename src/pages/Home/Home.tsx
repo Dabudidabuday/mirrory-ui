@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Grid,
+  Icon,
   LinearProgress,
   Typography,
 } from "@mui/material";
@@ -12,6 +13,8 @@ import { ChevronRightOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import { useQuery } from "react-query";
+import { HomeGreetings } from "./components/Greetings";
+import { Quote } from "../../components/quote/Quote";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -44,6 +47,10 @@ export const Home = () => {
     },
   });
 
+  if (!userInfo) {
+    return <></>;
+  }
+
   return (
     <>
       <Grid
@@ -51,64 +58,66 @@ export const Home = () => {
         flexDirection="column"
         sx={{
           display: "grid",
-          gridTemplateRows: "auto auto auto auto",
+          // gridTemplateRows: "auto auto auto auto",
           flexDirection: "column",
           height: "100%",
           marginTop: 2,
         }}
       >
-        <Grid item sx={{ display: "flex", alignItems: "flex-start" }}>
-          <Box sx={{ flex: 1, direction: "column" }}>
-            <Typography variant="h4" mb={1}>
-              Доброго ранку, {userInfo?.first_name}
+        <HomeGreetings firstName={userInfo.first_name} />
+
+        <Box sx={{ display: "flex", gap: "24px", marginBottom: 5 }}>
+          <Grid item sx={{ width: "100%" }}>
+            <Typography sx={{ textTransform: "uppercase", marginBottom: 3 }}>
+              Мій поточний спринт
             </Typography>
-            <Typography
-              variant="h6"
+
+            <Box
               sx={{
-                fontWeight: 300,
-                letterSpacing: "0.15px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                padding: "16px 24px",
+                borderRadius: "16px",
+                background: "#F3EEE5",
               }}
             >
-              зараз саме час змін ✨
-            </Typography>
-          </Box>
-          <Box sx={{}}>
-            <Typography variant="h5">
-              {dayjs(new Date()).format("D MMMM,")}
-            </Typography>
-            <Typography variant="h6">
-              {dayjs(new Date()).format("dddd")}
-            </Typography>
-          </Box>
-        </Grid>
-
-        <Divider
-          flexItem
-          orientation="horizontal"
-          sx={{ marginY: 4, height: "1px" }}
-        />
-
-        <Grid item>
-          <Typography sx={{ textTransform: "uppercase" }}>
-            Мій поточний спринт
-          </Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: 2,
-              background: "#F3EEE5",
-            }}
-          >
-            <Box>
-              <Typography>📝 Стоїцизм</Typography>
-              <Typography>День 3. Негативна візуалізація</Typography>
-              <LinearProgress variant="determinate" value={30} />
+              <Box
+                sx={{ display: "flex", alignItems: "center", marginBottom: 4 }}
+              >
+                <Icon sx={{ width: 42, height: 42 }}>📝</Icon>
+                <Box sx={{ justifySelf: "flex-start" }}>
+                  <Typography sx={{ marginBottom: 1 }}>Стоїцизм</Typography>
+                  <Typography>День 3. Негативна візуалізація</Typography>
+                </Box>
+                <Button sx={{ marginLeft: "auto" }} variant="contained">
+                  Продовжити
+                </Button>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={30}
+                  sx={{
+                    width: 175,
+                    border: "1px solid grey",
+                    borderRadius: "16px",
+                    height: "12px",
+                    background: "#F9F7F3",
+                    marginRight: 1,
+                  }}
+                />
+                <Typography variant="body2">2/10 завершено</Typography>
+              </Box>
             </Box>
-            <Button variant="contained">Продовжити</Button>
-          </Box>
-        </Grid>
+          </Grid>
+          <Quote
+            quote={{
+              text: "Зміни ставлення до речей, які тебе турбують, і ти будеш від них у безпеці.",
+              author: "Марк Аврелій",
+            }}
+          />
+        </Box>
 
         <Grid item>
           <Box

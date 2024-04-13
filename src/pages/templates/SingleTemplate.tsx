@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -16,6 +16,7 @@ import IconSmile from "../../assets/smile.svg";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { api } from "../../api";
+import { motion } from "framer-motion";
 
 interface Question {
   id: number;
@@ -72,28 +73,44 @@ interface Answer {
 
 export const SingleTemplate = () => {
   const navigate = useNavigate();
+
   const { id } = useParams();
+
+  const entityPath = useMemo(() => {
+    return window.location.pathname.includes("templates")
+      ? "template"
+      : "notes";
+  }, [window.location]);
+
+  console.log("entityPath", entityPath);
 
   const { data: workout, isLoading } = useQuery({
     queryKey: "get template info",
     queryFn: async () => {
-      const response = await api.post("template/:id", { id });
+      const response = await api.post(`${entityPath}/${id}`, { id });
 
-      return response.data;
+      console.log("response", response);
+
+      const workout = response?.data?.template
+        ? response?.data?.template
+        : response.data;
+
+      const answers = workout?.question
+        ?.sort((a, b) => a.order - b.order)
+        .map((question) => ({
+          text: question?.answer?.[0]?.text || "",
+          question_id: question.id,
+        }));
+
+      setValue("answers", answers);
+
+      return workout;
     },
   });
 
-  console.log("workout", workout);
-
-  const { control, watch, handleSubmit } = useForm({
+  const { control, watch, handleSubmit, getValues, setValue } = useForm({
     defaultValues: {
-      answers: [
-        { text: "" },
-        { text: "" },
-        { text: "" },
-        { text: "" },
-        { text: "" },
-      ],
+      answers: [{ text: "", question_id: "" }],
     },
   });
   const { fields, insert } = useFieldArray({
@@ -101,21 +118,54 @@ export const SingleTemplate = () => {
     name: "answers",
   });
 
-  if (isLoading) return <></>;
+  const onSubmit = async (data) => {
+    const savedAnswers = await api.post("notes/create", {
+      total: data.answers,
+      template_id: id,
+    });
+
+    navigate("/home");
+  };
+
+  const handleBlur = async (value, question_id) => {
+    const values = getValues("answers");
+
+    const filtered = values.filter((item) => item.question_id !== question_id);
+
+    setValue("answers", [
+      ...[
+        {
+          text: value,
+          question_id,
+        },
+      ],
+      ...filtered,
+    ]);
+
+    // const saveAnswer = await api.post("answer/create", {
+    //   text: value,
+    //   note: id,
+    //   question: question_id,
+    // });
+  };
+
+  const handleStart = () => {};
+
+  if (isLoading || !workout) return <></>;
 
   return (
     <Box
       sx={{
         padding: "24px 0 0",
-
         flexWrap: "nowrap",
         display: "flex",
         justifyContent: "space-between",
-        height: "100vh",
-        overflow: "auto",
       }}
     >
-      <Box sx={{ paddingX: "10px", overflow: "auto" }}>
+      <Box
+        className="scroll-box"
+        sx={{ paddingX: "10px", height: 1200, overflow: "auto" }}
+      >
         <Typography variant="h5" fontWeight="bold" sx={{ marginBottom: 2 }}>
           {workout.name}
         </Typography>
@@ -137,85 +187,99 @@ export const SingleTemplate = () => {
               gap: 4,
             }}
           >
-            {workout.question.map((step, index) => (
-              <>
-                <Accordion
-                  key={step.id}
-                  square
-                  sx={{
-                    borderRadius: "16px",
-                    background: "transparent",
-                    boxShadow: "1px 1px 24px 0px rgba(100, 100, 100, 0.10)",
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ArrowDownward />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
+            {workout.question
+              ?.sort((a, b) => a.order - b.order)
+              .map((step, index) => (
+                <Box key={`${step.id}-${index}`}>
+                  <Accordion
+                    square
+                    sx={{
+                      borderRadius: "16px",
+                      background: "transparent",
+                      boxShadow: "1px 1px 24px 0px rgba(100, 100, 100, 0.10)",
+                    }}
                   >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      {step.isComplete && (
-                        <Chip
-                          label="Виконано"
-                          variant="filled"
-                          sx={{ borderRadius: "8px", alignSelf: "flex-start" }}
-                          icon={<Check />}
-                        />
-                      )}
-                      <Typography fontWeight="bold" sx={{ marginTop: 1 }}>
-                        {index + 1}. {step.name}
-                      </Typography>
-
-                      <Typography>{step.description}</Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box
-                      sx={{
-                        borderLeft: "4px solid #4E4E4E",
-                        paddingLeft: 2,
-                        marginBottom: 3,
-                      }}
+                    <AccordionSummary
+                      expandIcon={<ArrowDownward />}
+                      aria-controls="panel1-content"
+                      id="panel1-header"
                     >
-                      <Typography sx={{ paddingY: "10px" }}>
-                        <span style={{ fontWeight: "bold" }}>Порада! </span>
-                        {step.advice}
-                      </Typography>
-                    </Box>
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        {getValues("answers").find(
+                          (answer) => answer.question_id == step.id
+                        )?.text && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <Chip
+                              label="Виконано"
+                              variant="filled"
+                              sx={{
+                                borderRadius: "8px",
+                                alignSelf: "flex-start",
+                                transition: "ease-in 0.3s",
+                              }}
+                              icon={<Check />}
+                            />
+                          </motion.div>
+                        )}
+                        <Typography fontWeight="bold" sx={{ marginTop: 1 }}>
+                          {index + 1}. {step.name}
+                        </Typography>
 
-                    <Box
-                      sx={{
-                        padding: "8px 16px",
-                        backgroundColor: "#F4F4F4",
-                        borderRadius: "16px",
-                      }}
-                    >
-                      <Typography fontWeight="bold">Приклад</Typography>
-                      <Typography>{step.example}</Typography>
-                    </Box>
+                        <Typography>{step.description}</Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          borderLeft: "4px solid #4E4E4E",
+                          paddingLeft: 2,
+                          marginBottom: 3,
+                        }}
+                      >
+                        <Typography sx={{ paddingY: "10px" }}>
+                          <span style={{ fontWeight: "bold" }}>Порада! </span>
+                          {step.advice}
+                        </Typography>
+                      </Box>
 
-                    <Controller
-                      name={`answers.${index}.text`}
-                      control={control}
-                      render={({ field }) => (
-                        <TextareaAutosize
-                          {...field}
-                          placeholder="почніть писати"
-                          style={{
-                            width: "-webkit-fill-available",
-                            minHeight: "120px",
-                            background: "transparent",
-                            borderRadius: "16px",
-                            padding: "16px",
-                            marginTop: "24px",
-                          }}
-                        />
-                      )}
-                    />
-                  </AccordionDetails>
-                </Accordion>
-              </>
-            ))}
+                      <Box
+                        sx={{
+                          padding: "8px 16px",
+                          backgroundColor: "#F4F4F4",
+                          borderRadius: "16px",
+                        }}
+                      >
+                        <Typography fontWeight="bold">Приклад</Typography>
+                        <Typography>{step.example}</Typography>
+                      </Box>
+
+                      <Controller
+                        name={`answers.${index}.text`}
+                        control={control}
+                        render={({ field }) => (
+                          <TextareaAutosize
+                            {...field}
+                            onBlur={(e) => handleBlur(e.target.value, step.id)}
+                            placeholder="почніть писати"
+                            style={{
+                              width: "-webkit-fill-available",
+                              minHeight: "120px",
+                              background: "transparent",
+                              borderRadius: "16px",
+                              padding: "16px",
+                              marginTop: "24px",
+                            }}
+                          />
+                        )}
+                      />
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
+              ))}
           </Box>
         </Box>
       </Box>
@@ -223,9 +287,25 @@ export const SingleTemplate = () => {
       <Divider flexItem orientation="vertical" sx={{ marginX: 4 }} />
 
       <Box sx={{ minWidth: "240px", maxWidth: "240px" }}>
-        <Button variant="contained" fullWidth>
-          Завершити практику
-        </Button>
+        {entityPath == "notes" ? (
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            onClick={handleSubmit(onSubmit)}
+          >
+            Завершити практику
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            onClick={handleStart}
+          >
+            Почати практику
+          </Button>
+        )}
 
         <Box
           sx={{

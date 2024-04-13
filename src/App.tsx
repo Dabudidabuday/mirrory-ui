@@ -36,13 +36,13 @@ function App() {
             path="notes/:id"
             element={
               <PrivateRoute>
-                <SingleNote />
+                <SingleTemplate />
               </PrivateRoute>
             }
           />
 
           <Route
-            path={`templates/:id`}
+            path="templates/:id"
             element={
               <PrivateRoute>
                 <SingleTemplate />

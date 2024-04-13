@@ -46,3 +46,10 @@ body {
 .burger-button.active .burger-line--3 {
   transform: translate(0px, -10px) rotate(45deg);
 }
+
+
+@media (max-width: 1680px) {
+  .scroll-box {
+    height: 620px !important;
+  }
+}
