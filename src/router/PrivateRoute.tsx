@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { api } from "../api";
 
 interface PrivateRouteProps {
@@ -19,7 +19,7 @@ export const PrivateRoute = (props: PrivateRouteProps) => {
       try {
         const response = await api.get("/user");
 
-        set$auth(response.data);
+        set$auth(response?.data);
       } catch (e) {
         console.error(e);
       }

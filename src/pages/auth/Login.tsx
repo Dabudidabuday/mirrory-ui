@@ -91,7 +91,7 @@ export const Login = () => {
         token: googleUser.credential,
       });
 
-      api.defaults.headers.common["Authorization"] = `Bearer ${response.data}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${response?.data}`;
 
       navigate("/home");
     } catch (e) {

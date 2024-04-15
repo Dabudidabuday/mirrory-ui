@@ -25,10 +25,9 @@ export const Menu = () => {
   const handleLogout = async () => {
     googleLogout();
 
-    await api.post("/logout");
+    const loggedOut = await api.post("/logout");
 
     api.defaults.headers.common["Authorization"] = "";
-
     navigate("/login");
   };
 
@@ -69,7 +68,7 @@ export const Menu = () => {
       icon: <PersonOffOutlined />,
     },
     {
-      path: "login",
+      path: "",
       name: "Вийти",
       callback: handleLogout,
       icon: <Logout />,

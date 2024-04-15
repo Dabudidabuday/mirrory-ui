@@ -9,10 +9,10 @@ import { AddEditTemplate } from "./pages/templates/AddEditTemplate";
 import { Home } from "./pages/Home/Home";
 import { Profile } from "./pages/Profile/Profile";
 import { MyNotes } from "./pages/Notes/MyNotes";
-import { SingleNote } from "./pages/Notes/SingleNote";
 import { Calendar } from "./pages/Calendar/Calendar";
 import { Complete } from "./pages/templates/Complete";
 import { WideLayout } from "./layouts/WideLayout";
+import { NotFound } from "./pages/auth/NotFound";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path="signin" element={<SignUp />} />
         <Route path="login" element={<Login />} />
-        <Route path="*" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
 
         <Route element={<WideLayout />}>
           <Route

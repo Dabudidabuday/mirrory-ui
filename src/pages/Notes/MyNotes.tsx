@@ -43,7 +43,7 @@ export const MyNotes = () => {
                 background: "#FCFBFA",
                 boxShadow: "1px 1px 24px 0px rgba(100, 100, 100, 0.10)",
               }}
-              key={name}
+              key={note_id}
             >
               <Box>📝</Box>
 

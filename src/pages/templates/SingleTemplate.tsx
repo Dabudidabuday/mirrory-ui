@@ -6,12 +6,13 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
   TextareaAutosize,
   Typography,
 } from "@mui/material";
 import { ArrowDownward, Check } from "@mui/icons-material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import IconSmile from "../../assets/smile.svg";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
@@ -29,77 +30,31 @@ interface Answer {
   question_id: number;
 }
 
-// const workout = {
-//   id: "24t23235235235235235",
-//   name: "Негативна візуалізація",
-//   description:
-//     "Негативна візуалізація — це практика уявлення негативних ситуацій чи подій з метою приготування себе до можливих викликів або стресових ситуацій у майбутньому. Ця практика базується на принципі психології, який стверджує, що уявлення негативних сценаріїв може зменшити психологічний стрес, оскільки дозволяє підготувати реакцію на непередбачувані обставини. ",
-//   how_it_works:
-//     "Уявлення негативних сценаріїв допомагає зменшити вплив стресу та тривоги, оскільки дозволяє розглянути можливі проблеми заздалегідь та розробити план дій для їх вирішення. Ця практика допомагає вам навчитися керувати своїми емоціями та реагувати більш ефективно на стресові ситуації.",
-//   steps: [
-//     {
-//       name: "Вибір ситуації",
-//       description:
-//         "Виберіть конкретну ситуацію або подію, яку ви хочете візуалізувати.",
-//       advice:
-//         "Оберіть ситуацію, яка викликає у вас стрес, але не будьте занадто суворими з собою. Оберіть щось, що є реалістичним і потенційно можливим.",
-//       example:
-//         "ситуація, де ви отримуєте важке повідомлення від керівництва про можливий перегляд вашої роботи.",
-//       order: "0",
-//       isComplete: true,
-//     },
-//     {
-//       name: "Уявлення ситуації",
-//       description: "Уявіть собі цю ситуацію якнайреалістичніше.",
-//       advice:
-//         "Спробуйте відчути всі деталі та емоції, пов'язані з цією ситуацією.",
-//       example:
-//         "Перед вами стоїть кабінет керівника, ви бачите його вираз обличчя, відчуваєте важкий атмосферу кімнати.",
-//       order: "1",
-//       isComplete: false,
-//     },
-//     {
-//       name: "Уявлення ситуації",
-//       description: "Уявіть собі цю ситуацію якнайреалістичніше.",
-//       advice:
-//         "Спробуйте відчути всі деталі та емоції, пов'язані з цією ситуацією.",
-//       example:
-//         "Перед вами стоїть кабінет керівника, ви бачите його вираз обличчя, відчуваєте важкий атмосферу кімнати.",
-//       order: "2",
-//       isComplete: false,
-//     },
-//   ],
-// };
-
 export const SingleTemplate = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { id } = useParams();
 
   const entityPath = useMemo(() => {
-    return window.location.pathname.includes("templates")
-      ? "template"
-      : "notes";
-  }, [window.location]);
-
-  console.log("entityPath", entityPath);
+    return location.pathname.includes("templates") ? "template" : "notes";
+  }, [location]);
 
   const { data: workout, isLoading } = useQuery({
     queryKey: "get template info",
     queryFn: async () => {
       const response = await api.post(`${entityPath}/${id}`, { id });
 
-      console.log("response", response);
-
       const workout = response?.data?.template
         ? response?.data?.template
         : response.data;
 
       const answers = workout?.question
-        ?.sort((a, b) => a.order - b.order)
-        .map((question) => ({
-          text: question?.answer?.[0]?.text || "",
-          question_id: question.id,
+        ?.sort((a, b) => a?.order - b?.order)
+        ?.map(({ id, questionAnswer }) => ({
+          text: questionAnswer?.answer?.text || "",
+          answer_id: questionAnswer?.answer?.id || "",
+          question_id: id || "",
         }));
 
       setValue("answers", answers);
@@ -110,7 +65,7 @@ export const SingleTemplate = () => {
 
   const { control, watch, handleSubmit, getValues, setValue } = useForm({
     defaultValues: {
-      answers: [{ text: "", question_id: "" }],
+      answers: [{ text: "", question_id: "", answer_id: "" }],
     },
   });
   const { fields, insert } = useFieldArray({
@@ -118,40 +73,47 @@ export const SingleTemplate = () => {
     name: "answers",
   });
 
-  const onSubmit = async (data) => {
-    const savedAnswers = await api.post("notes/create", {
-      total: data.answers,
-      template_id: id,
-    });
+  const watchedFields = watch("answers");
 
+  const onSubmit = async (data) => {
     navigate("/home");
   };
 
   const handleBlur = async (value, question_id) => {
     const values = getValues("answers");
 
+    const question = workout.question.find((q) => q.id == question_id);
     const filtered = values.filter((item) => item.question_id !== question_id);
+
+    const saveAnswer = await api.post("answer/create", {
+      id: question.questionAnswer?.answer?.id || undefined,
+      text: value,
+      note: id,
+      question: question_id,
+    });
 
     setValue("answers", [
       ...[
         {
           text: value,
           question_id,
+          answer_id: saveAnswer?.data?.id,
         },
       ],
       ...filtered,
     ]);
-
-    // const saveAnswer = await api.post("answer/create", {
-    //   text: value,
-    //   note: id,
-    //   question: question_id,
-    // });
   };
 
-  const handleStart = () => {};
+  const handleStart = async () => {
+    const createdNote = await api.post(`notes/create`, { id });
 
-  if (isLoading || !workout) return <></>;
+    if (createdNote?.data?.id) {
+      navigate(`/notes/${createdNote?.data?.id}`);
+    }
+  };
+
+  if (isLoading || !workout || watchedFields.length < 2)
+    return <CircularProgress />;
 
   return (
     <Box
@@ -193,6 +155,7 @@ export const SingleTemplate = () => {
                 <Box key={`${step.id}-${index}`}>
                   <Accordion
                     square
+                    defaultExpanded={entityPath !== "template" && index == 0}
                     sx={{
                       borderRadius: "16px",
                       background: "transparent",
@@ -200,7 +163,10 @@ export const SingleTemplate = () => {
                     }}
                   >
                     <AccordionSummary
-                      expandIcon={<ArrowDownward />}
+                      expandIcon={
+                        entityPath !== "template" && <ArrowDownward />
+                      }
+                      disabled={entityPath == "template"}
                       aria-controls="panel1-content"
                       id="panel1-header"
                     >
@@ -233,29 +199,33 @@ export const SingleTemplate = () => {
                       </Box>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Box
-                        sx={{
-                          borderLeft: "4px solid #4E4E4E",
-                          paddingLeft: 2,
-                          marginBottom: 3,
-                        }}
-                      >
-                        <Typography sx={{ paddingY: "10px" }}>
-                          <span style={{ fontWeight: "bold" }}>Порада! </span>
-                          {step.advice}
-                        </Typography>
-                      </Box>
+                      {step.advice && (
+                        <Box
+                          sx={{
+                            borderLeft: "4px solid #4E4E4E",
+                            paddingLeft: 2,
+                            marginBottom: 3,
+                          }}
+                        >
+                          <Typography sx={{ paddingY: "10px" }}>
+                            <span style={{ fontWeight: "bold" }}>Порада! </span>
+                            {step.advice}
+                          </Typography>
+                        </Box>
+                      )}
 
-                      <Box
-                        sx={{
-                          padding: "8px 16px",
-                          backgroundColor: "#F4F4F4",
-                          borderRadius: "16px",
-                        }}
-                      >
-                        <Typography fontWeight="bold">Приклад</Typography>
-                        <Typography>{step.example}</Typography>
-                      </Box>
+                      {step.example && (
+                        <Box
+                          sx={{
+                            padding: "8px 16px",
+                            backgroundColor: "#F4F4F4",
+                            borderRadius: "16px",
+                          }}
+                        >
+                          <Typography fontWeight="bold">Приклад</Typography>
+                          <Typography>{step.example}</Typography>
+                        </Box>
+                      )}
 
                       <Controller
                         name={`answers.${index}.text`}
