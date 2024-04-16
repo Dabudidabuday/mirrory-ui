@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "compile": "graphql-codegen",
     "watch": "graphql-codegen -w",
-    "start": "serve -s build",
+    "start": "serve -s vite build",
     "build": "vite build",
     "dev": "vite"
   },
