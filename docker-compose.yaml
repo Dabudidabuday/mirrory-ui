@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mirrory-ui:
+    image: mirumir01/mirrory-ui:v.1.0.0
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    stdin_open: true
+    tty: true
+    platform: linux/amd64
+
+
+# version: "2.2"
+# services:
+#   nginx-react:
+#     image: reactapp:latest
+#     container_name: mirrory-ui
+#     build:
+#       context: .
+#       dockerfile: dockerfile
+#     ports:
+#       - 80:80
+#     environment:
+#       NODE_ENV: production
