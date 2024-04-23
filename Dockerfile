@@ -2,17 +2,31 @@ FROM node:18-alpine
 
 WORKDIR /mirrory-ui
 
-COPY package*.json .
+ENV PATH /mirrory-ui/node_modules/.bin:$PATH
 
-RUN npm install
+COPY package.json .
+
+RUN npm install --silent
 
 COPY . .
 
 RUN npm run build
 
+# EXPOSE 3000
+
+CMD ["node", "run", "dev"]
+
+FROM nginx:alpine
+
+COPY --from=build /mirrory=ui/dist /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY ./nginx/nginx.conf /etc/nginx/conf.d
+
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["nginx", "-g", "daemon off;"]
 
 
 
