@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 100",
     "preview": "vite preview",
-    "start": "vite start"
+    "start": "vite start",
+    "serve": "serve -s dist"
   },
   "dependencies": {
     "@apollo/client": "^3.9.10",
@@ -39,7 +40,8 @@
     "react-query": "^3.39.3",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.3",
-    "react-scroll": "^1.9.0"
+    "react-scroll": "^1.9.0",
+    "serve": "^14.2.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.2",
