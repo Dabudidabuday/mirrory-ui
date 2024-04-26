@@ -27,3 +27,4 @@ jobs:
           VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
       - run: npm i
       - run: npm run build --if-present
+      - run: pm2 restart mirrory-ui
