@@ -18,7 +18,7 @@ import { Quote } from "../../components/quote/Quote";
 
 export const Home = () => {
   const navigate = useNavigate();
-  // const [userInfo, set$userInfo] = useState();
+  const [userInfo, set$userInfo] = useState();
 
   const { data: notes, isLoading } = useQuery({
     queryKey: ["my notes"],
