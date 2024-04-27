@@ -6,7 +6,6 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ApolloProvider } from "@apollo/client";
 
-import { Provider } from "react-redux";
 import { store } from "./store/index.ts";
 import App from "./App.tsx";
 import "./index.css";
@@ -49,13 +48,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <ApolloProvider client={client}>
-          <Provider store={store}>
-            <BrowserRouter>
-              <ThemeProvider theme={theme}>
-                <App />
-              </ThemeProvider>
-            </BrowserRouter>
-          </Provider>
+          <BrowserRouter>
+            <ThemeProvider theme={theme}>
+              <App />
+            </ThemeProvider>
+          </BrowserRouter>
         </ApolloProvider>
       </QueryClientProvider>
     </React.StrictMode>
