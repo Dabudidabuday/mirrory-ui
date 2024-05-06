@@ -40,7 +40,7 @@ export const SignUp = () => {
       return;
     }
 
-    navigate("/home");
+    navigate("/");
   };
 
   const onGoogleSuccess = async (googleUser: CredentialResponse) => {
@@ -51,7 +51,7 @@ export const SignUp = () => {
 
       api.defaults.headers.common["Authorization"] = `Bearer ${response.data}`;
 
-      navigate("/home");
+      navigate("/");
     } catch (e) {
       console.error(e);
     }

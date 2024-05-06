@@ -10,7 +10,7 @@ export const NotFound = () => {
         Сторінки не існує
       </Typography>
 
-      <Button variant="contained" onClick={() => navigate("/home")}>
+      <Button variant="contained" onClick={() => navigate("/")}>
         Домашня сторінка
       </Button>
     </Box>

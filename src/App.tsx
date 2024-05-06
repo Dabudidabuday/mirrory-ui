@@ -24,7 +24,7 @@ function App() {
 
         <Route element={<WideLayout />}>
           <Route
-            path="Home"
+            path=""
             element={
               <PrivateRoute>
                 <Home />

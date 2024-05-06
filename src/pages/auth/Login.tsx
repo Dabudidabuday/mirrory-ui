@@ -82,7 +82,7 @@ export const Login = () => {
 
     api.defaults.headers.common["Authorization"] = `Bearer ${response.data}`;
 
-    navigate("/home");
+    navigate("/");
   };
 
   const onGoogleLoginSuccess = async (googleUser: CredentialResponse) => {
@@ -93,7 +93,7 @@ export const Login = () => {
 
       api.defaults.headers.common["Authorization"] = `Bearer ${response?.data}`;
 
-      navigate("/home");
+      navigate("/");
     } catch (e) {
       console.error(e);
     }

@@ -33,9 +33,9 @@ export const Menu = () => {
 
   const pages = [
     {
-      path: "home",
       name: "Домашня сторінка",
       icon: <HomeOutlined />,
+      callback: () => navigate("/"),
     },
     {
       path: "notes",

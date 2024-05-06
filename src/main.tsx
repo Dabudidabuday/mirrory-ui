@@ -43,8 +43,6 @@ const theme = createTheme({
   },
 });
 
-console.log("import.meta.env.VITE_CLIENT_ID", import.meta.env.VITE_CLIENT_ID);
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
     <React.StrictMode>

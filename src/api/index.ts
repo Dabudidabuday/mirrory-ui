@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: `http://${import.meta.env.VITE_BASE_URL}:8000/api`,
   withCredentials: true,
   // headers: {
   //   "Access-Control-Allow-Origin": true,
@@ -19,7 +19,7 @@ api.interceptors.response.use(
         { withCredentials: true }
       );
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         api.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${response.data.token}`;

@@ -76,7 +76,7 @@ export const SingleTemplate = () => {
   const watchedFields = watch("answers");
 
   const onSubmit = async (data) => {
-    navigate("/home");
+    navigate("/");
   };
 
   const handleBlur = async (value, question_id) => {
