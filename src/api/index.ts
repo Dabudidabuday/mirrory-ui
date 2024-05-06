@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: `http://${import.meta.env.VITE_BASE_URL}:8000/api`,
+  baseURL: `${import.meta.env.VITE_BASE_URL}/api`,
   withCredentials: true,
   // headers: {
   //   "Access-Control-Allow-Origin": true,
